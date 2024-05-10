@@ -1,17 +1,32 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export const Offline = () => {
   const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
 
-  if (isOnline) {
-    return (
-      <p>Všechno v pořádku</p>
-    )
+  const handleOffline = () => {
+    console.log("offline")
+    setIsOnline(false)
   }
 
-  return (
-    <p>Jste offline!</p>
-  );
+  const handleOnline = () => {
+    console.log("online")
+    setIsOnline(true)
+  }
+
+  useEffect(() => {
+    console.log("mounted")
+
+    window.addEventListener('offline', handleOffline)
+    window.addEventListener('online', handleOnline)
+
+    return () => {
+      console.log("unmounted")
+      window.removeEventListener('offline', handleOffline)
+      window.removeEventListener('online', handleOnline)
+    }
+  }, [])
+
+  return isOnline ? <p>Jste online!</p> : <p>Jste offline!</p>
 };
 
 export default Offline;
